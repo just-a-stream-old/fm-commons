@@ -18,6 +18,23 @@
 		<java.version>14</java.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>gitlab-maven</id>
+			<url>https://gitlab.com/api/v4/groups/9027124/-/packages/maven</url>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>gitlab-maven</id>
+			<url>https://gitlab.com/api/v4/projects/21178154/packages/maven</url>
+		</repository>
+		<snapshotRepository>
+			<id>gitlab-maven</id>
+			<url>https://gitlab.com/api/v4/projects/21178154/packages/maven</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<dependencies>
 		<!-- Json -->
 		<dependency>
@@ -55,8 +72,15 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

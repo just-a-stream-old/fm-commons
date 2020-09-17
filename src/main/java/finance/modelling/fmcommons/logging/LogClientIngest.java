@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class LogIngest {
+public class LogClientIngest {
 
     private static final Gson gson = new Gson();
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss'Z'"));
