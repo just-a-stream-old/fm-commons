@@ -28,7 +28,7 @@ public class LogPublisher {
             String outputTopic,
             List<UUID> traceIds) {
         Map<String, Object> baseOrderedLogMap = new LinkedHashMap<>();
-        baseOrderedLogMap.put("event", (String.format("Sent ProducerRecord with value: %s to Kafka", dataItem.getSimpleName())));
+        baseOrderedLogMap.put("event", (String.format("Sent ProducerRecord with value type: %s to Kafka", dataItem.getSimpleName())));
         baseOrderedLogMap.put("topic", outputTopic);
         baseOrderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
         baseOrderedLogMap.put("traceId(s)", traceIds);
