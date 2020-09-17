@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 public class LogPublisher {
@@ -19,7 +16,7 @@ public class LogPublisher {
     public static void logInfoDataItemSent(
             Class<?> dataItem,
             String outputTopic,
-            List<String> traceIds,
+            List<UUID> traceIds,
             Map<String, Object> additionalInfo) {
         Map<String, Object> orderedMap = buildBaseLogInfoDataItemSentMap(dataItem, outputTopic, traceIds);
         orderedMap.put("additionalInfo", additionalInfo);
@@ -29,12 +26,20 @@ public class LogPublisher {
     private static Map<String, Object> buildBaseLogInfoDataItemSentMap(
             Class<?> dataItem,
             String outputTopic,
-            List<String> traceIds) {
+            List<UUID> traceIds) {
         Map<String, Object> baseOrderedLogMap = new LinkedHashMap<>();
         baseOrderedLogMap.put("event", (String.format("Sent ProducerRecord<String, %s> to kafka", dataItem.getSimpleName())));
         baseOrderedLogMap.put("topic", outputTopic);
         baseOrderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
         baseOrderedLogMap.put("traceId(s)", traceIds);
         return baseOrderedLogMap;
+    }
+
+    public static void logInfoDataItemSent(
+            Class<?> dataItem,
+            String outputTopic,
+            List<UUID> traceIds) {
+        Map<String, Object> orderedMap = buildBaseLogInfoDataItemSentMap(dataItem, outputTopic, traceIds);
+        log.info(gson.toJson(orderedMap, LinkedHashMap.class));
     }
 }

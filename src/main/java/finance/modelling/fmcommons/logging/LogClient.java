@@ -16,57 +16,57 @@ public class LogClient {
     private static final Gson gson = new Gson();
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss'Z'"));
 
-    public static void logInfoDataItemIngested(
+    public static void logInfoDataItemReceived(
             String ticker,
             Class<?> dataItem,
             String resourceUri,
             Map<String, Object> additionalInfo) {
-        Map<String, Object> orderedMap = buildBaseLogInfoDataItemIngestedMap(ticker, dataItem, resourceUri);
+        Map<String, Object> orderedMap = buildBaseLogInfoDataItemReceivedMap(ticker, dataItem, resourceUri);
         orderedMap.put("additionalInfo", additionalInfo);
         log.info(gson.toJson(orderedMap, LinkedHashMap.class));
     }
 
-    private static Map<String, Object> buildBaseLogInfoDataItemIngestedMap(
+    private static Map<String, Object> buildBaseLogInfoDataItemReceivedMap(
             String ticker,
             Class<?> dataItem,
             String resourceUri) {
         Map<String, Object> baseOrderedLogMap = new LinkedHashMap<>();
-        baseOrderedLogMap.put("event", (String.format("Ingested data item: %s for ticker: %s", dataItem.getSimpleName(), ticker)));
+        baseOrderedLogMap.put("event", (String.format("Received data item: %s for ticker: %s", dataItem.getSimpleName(), ticker)));
         baseOrderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
         baseOrderedLogMap.put("source(s)", resourceUri);
         return baseOrderedLogMap;
     }
 
-    public static void logInfoDataItemIngested(
+    public static void logInfoDataItemReceived(
             String ticker,
             Class<?> dataItem,
             String resourceUri) {
-        Map<String, Object> orderedMap = buildBaseLogInfoDataItemIngestedMap(ticker, dataItem, resourceUri);
+        Map<String, Object> orderedMap = buildBaseLogInfoDataItemReceivedMap(ticker, dataItem, resourceUri);
         log.info(gson.toJson(orderedMap, LinkedHashMap.class));
     }
 
 
-    public static void logErrorFailedDataItemIngestion(
+    public static void logErrorFailedToReceiveDataItem(
             String ticker,
             Class<?> dataItem,
             Throwable error,
             String resourceUri,
             List<String> actions,
             Map<String, Object> additionalInfo) {
-        Map<String, Object> orderedMap = buildBaseLogErrorFailedDataItemIngestion(
+        Map<String, Object> orderedMap = buildBaseLogErrorFailedToReceiveDataItem(
                 ticker, dataItem, error, resourceUri, actions);
         orderedMap.put("additionalInfo", additionalInfo);
         log.error(gson.toJson(orderedMap, LinkedHashMap.class));
     }
 
-    private static Map<String,Object> buildBaseLogErrorFailedDataItemIngestion(
+    private static Map<String,Object> buildBaseLogErrorFailedToReceiveDataItem(
             String ticker,
             Class<?> dataItem,
             Throwable error,
             String resourceUri,
             List<String> actions) {
         Map<String, Object> baseOrderedLogMap = new LinkedHashMap<>();
-        baseOrderedLogMap.put("event", (String.format("Failure to ingest data item: %s for ticker: %s", dataItem.getSimpleName(), ticker)));
+        baseOrderedLogMap.put("event", (String.format("Failure to receive data item: %s for ticker: %s", dataItem.getSimpleName(), ticker)));
         baseOrderedLogMap.put("error", error.getMessage());
         baseOrderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
         baseOrderedLogMap.put("source(s)", resourceUri);
@@ -74,13 +74,13 @@ public class LogClient {
         return baseOrderedLogMap;
     }
 
-    public static void logErrorFailedDataItemIngestion(
+    public static void logErrorFailedToReceiveDataItem(
             String ticker,
             Class<?> dataItem,
             Throwable error,
             String resourceUri,
             List<String> actions) {
-        Map<String, Object> orderedMap = buildBaseLogErrorFailedDataItemIngestion(
+        Map<String, Object> orderedMap = buildBaseLogErrorFailedToReceiveDataItem(
                 ticker, dataItem, error, resourceUri, actions);
         log.error(gson.toJson(orderedMap, LinkedHashMap.class));
     }
