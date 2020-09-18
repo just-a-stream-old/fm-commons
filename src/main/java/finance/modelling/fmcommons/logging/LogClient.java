@@ -85,4 +85,9 @@ public class LogClient {
         log.error(gson.toJson(orderedMap, LinkedHashMap.class));
     }
 
+    public static String buildResourcePath(String baseUrl, String resourceUrl) {
+        return baseUrl.concat("/").concat(resourceUrl);
+    }
+
+
 }
