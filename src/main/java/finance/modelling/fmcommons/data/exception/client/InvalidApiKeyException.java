@@ -1,4 +1,4 @@
-package finance.modelling.fmcommons.exception.client;
+package finance.modelling.fmcommons.data.exception.client;
 
 public class InvalidApiKeyException extends Exception {
     public InvalidApiKeyException(String errorMessage, Throwable error) {

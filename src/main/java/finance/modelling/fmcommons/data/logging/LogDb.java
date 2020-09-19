@@ -1,4 +1,4 @@
-package finance.modelling.fmcommons.logging;
+package finance.modelling.fmcommons.data.logging;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;

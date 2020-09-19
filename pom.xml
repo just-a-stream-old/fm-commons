@@ -62,6 +62,17 @@
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
+		<!-- Reactive Async - WebFlux & Project Reactor Extras -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor.addons</groupId>
+			<artifactId>reactor-extra</artifactId>
+			<version>3.3.3.RELEASE</version>
+		</dependency>
+
 		<!-- Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

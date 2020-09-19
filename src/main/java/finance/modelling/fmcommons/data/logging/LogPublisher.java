@@ -1,4 +1,4 @@
-package finance.modelling.fmcommons.logging;
+package finance.modelling.fmcommons.data.logging;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +16,9 @@ public class LogPublisher {
     public static void logInfoDataItemSent(
             Class<?> dataItem,
             String outputTopic,
-            List<UUID> traceIds,
+            String traceId,
             Map<String, Object> additionalInfo) {
-        Map<String, Object> orderedMap = buildBaseLogInfoDataItemSentMap(dataItem, outputTopic, traceIds);
+        Map<String, Object> orderedMap = buildBaseLogInfoDataItemSentMap(dataItem, outputTopic, traceId);
         orderedMap.put("additionalInfo", additionalInfo);
         log.info(gson.toJson(orderedMap, LinkedHashMap.class));
     }
@@ -26,20 +26,20 @@ public class LogPublisher {
     private static Map<String, Object> buildBaseLogInfoDataItemSentMap(
             Class<?> dataItem,
             String outputTopic,
-            List<UUID> traceIds) {
+            String traceId) {
         Map<String, Object> baseOrderedLogMap = new LinkedHashMap<>();
         baseOrderedLogMap.put("event", (String.format("Sent ProducerRecord with value type: %s to Kafka", dataItem.getSimpleName())));
         baseOrderedLogMap.put("topic", outputTopic);
         baseOrderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
-        baseOrderedLogMap.put("traceId(s)", traceIds);
+        baseOrderedLogMap.put("traceId", traceId);
         return baseOrderedLogMap;
     }
 
     public static void logInfoDataItemSent(
             Class<?> dataItem,
             String outputTopic,
-            List<UUID> traceIds) {
-        Map<String, Object> orderedMap = buildBaseLogInfoDataItemSentMap(dataItem, outputTopic, traceIds);
+            String traceId) {
+        Map<String, Object> orderedMap = buildBaseLogInfoDataItemSentMap(dataItem, outputTopic, traceId);
         log.info(gson.toJson(orderedMap, LinkedHashMap.class));
     }
 }

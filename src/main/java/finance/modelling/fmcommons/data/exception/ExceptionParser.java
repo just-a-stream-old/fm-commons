@@ -1,10 +1,10 @@
-package finance.modelling.fmcommons.exception;
+package finance.modelling.fmcommons.data.exception;
 
-import finance.modelling.fmcommons.exception.client.ClientDailyRequestLimitReachedException;
+import finance.modelling.fmcommons.data.exception.client.ClientDailyRequestLimitReachedException;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.SaslAuthenticationException;
 
-public class ParseException {
+public class ExceptionParser {
 
     public static boolean isClientDailyRequestLimitReached(Throwable error) {
         return error.getClass().equals(ClientDailyRequestLimitReachedException.class);
