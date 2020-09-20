@@ -1,23 +1,23 @@
 package finance.modelling.fmcommons.data.helper.client;
 
-import finance.modelling.fmcommons.data.exception.client.ClientDailyRequestLimitReachedException;
 import finance.modelling.fmcommons.data.exception.client.ClientEndPointHasNoDataException;
 import finance.modelling.fmcommons.data.exception.client.ClientRequestFrequencyLimitReachedException;
 import finance.modelling.fmcommons.data.exception.client.InvalidApiKeyException;
 import finance.modelling.fmcommons.data.logging.LogClient;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static finance.modelling.fmcommons.data.exception.ExceptionParser.isKafkaException;
-import static finance.modelling.fmcommons.data.exception.ExceptionParser.isSaslAuthentificationException;
+import static finance.modelling.fmcommons.data.exception.ExceptionParser.*;
 import static finance.modelling.fmcommons.data.logging.LogClient.getSimpleNameAndMessage;
 import static reactor.core.Exceptions.isRetryExhausted;
 
 @NoArgsConstructor
+@Slf4j
 public class FModellingClientHelper {
 
     public Throwable returnTechnicalException(Throwable error) {
@@ -31,7 +31,7 @@ public class FModellingClientHelper {
         }
         else if (isEmptyPayloadReceived(error)) {
             customException = new ClientEndPointHasNoDataException(
-                    "Client has no data to receive from this endpoint. It's likely it doesn't exist.", error);
+                    "Client has no data to receive from this endpoint. It is likely it does not exist.", error);
         }
         else {
             customException = error;
@@ -52,13 +52,9 @@ public class FModellingClientHelper {
     }
 
     public boolean isRetryableException(Throwable error) {
-        boolean isRetryable = true;
-        if (
-                error.getClass().equals(InvalidApiKeyException.class) ||
-                error.getClass().equals(ClientEndPointHasNoDataException.class) ||
-                error.getClass().equals(ClientDailyRequestLimitReachedException.class)
-        ) {
-            isRetryable = false;
+        boolean isRetryable = false;
+        if (error.getClass().equals(ClientRequestFrequencyLimitReachedException.class)) {
+            isRetryable = true;
         }
         return isRetryable;
     }
@@ -67,19 +63,24 @@ public class FModellingClientHelper {
         List<String> responseToError = new LinkedList<>();
         Map<String, Object> additionalInfo = new HashMap<>();
 
-        if (isKafkaException(error) || isSaslAuthentificationException(error)) {
-            responseToError.add("Log stacktrace");
-            error.printStackTrace();
-        }
-        else if (isRetryExhausted(error)) {
-            responseToError.add("Log original exception & retry info");
-            additionalInfo.put("retry info", getSimpleNameAndMessage(error));
-            error = error.getCause();
+        if (isClientEndPointHasNoDataException(error)) {
+            responseToError.add("Log debug and ignore.");
+            LogClient.logDebugFailedToReceiveDataItem(identifier, clazz, error, logResourcePath, responseToError, additionalInfo);
         }
         else {
-            responseToError.add("Default logging");
+            if (isKafkaException(error) || isSaslAuthentificationException(error)) {
+                responseToError.add("Log stacktrace");
+                error.printStackTrace();
+            }
+            else if (isRetryExhausted(error)) {
+                responseToError.add("Log original exception & retry info");
+                additionalInfo.put("retry info", getSimpleNameAndMessage(error));
+                error = error.getCause();
+            }
+            else {
+                responseToError.add("Default logging");
+            }
+            LogClient.logErrorFailedToReceiveDataItem(identifier, clazz, error, logResourcePath, responseToError, additionalInfo);
         }
-        LogClient.logErrorFailedToReceiveDataItem(
-                identifier, clazz, error, logResourcePath, responseToError, additionalInfo);
     }
 }

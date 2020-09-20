@@ -53,13 +53,13 @@ public class LogClient {
             String resourcePath,
             List<String> actions,
             Map<String, Object> additionalInfo) {
-        Map<String, Object> orderedMap = buildBaseLogErrorFailedToReceiveDataItem(
+        Map<String, Object> orderedMap = buildBaseLogFailedToReceiveDataItem(
                 identifier, dataItem, error, resourcePath, actions);
         orderedMap.put("additionalInfo", additionalInfo);
         log.error(gson.toJson(orderedMap, LinkedHashMap.class));
     }
 
-    private static Map<String,Object> buildBaseLogErrorFailedToReceiveDataItem(
+    private static Map<String,Object> buildBaseLogFailedToReceiveDataItem(
             String identifier,
             Class<?> dataItem,
             Throwable error,
@@ -80,10 +80,36 @@ public class LogClient {
             Throwable error,
             String resourcePath,
             List<String> actions) {
-        Map<String, Object> orderedMap = buildBaseLogErrorFailedToReceiveDataItem(
+        Map<String, Object> orderedMap = buildBaseLogFailedToReceiveDataItem(
                 identifier, dataItem, error, resourcePath, actions);
         log.error(gson.toJson(orderedMap, LinkedHashMap.class));
     }
+
+    public static void logDebugFailedToReceiveDataItem(
+            String identifier,
+            Class<?> dataItem,
+            Throwable error,
+            String resourcePath,
+            List<String> actions,
+            Map<String, Object> additionalInfo) {
+        Map<String, Object> orderedMap = buildBaseLogFailedToReceiveDataItem(
+                identifier, dataItem, error, resourcePath, actions);
+        orderedMap.put("additionalInfo", additionalInfo);
+        log.debug(gson.toJson(orderedMap, LinkedHashMap.class));
+    }
+
+    public static void logDebugFailedToReceiveDataItem(
+            String identifier,
+            Class<?> dataItem,
+            Throwable error,
+            String resourcePath,
+            List<String> actions) {
+        Map<String, Object> orderedMap = buildBaseLogFailedToReceiveDataItem(
+                identifier, dataItem, error, resourcePath, actions);
+        log.debug(gson.toJson(orderedMap, LinkedHashMap.class));
+    }
+
+
 
     public static void logInfoProcessComplete(String processName) {
         Map<String, Object> orderedMap = buildBaseLogInfoProcessComplete(processName);
