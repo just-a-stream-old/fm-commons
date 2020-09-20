@@ -4,6 +4,7 @@ import finance.modelling.fmcommons.data.exception.client.ClientDailyRequestLimit
 import finance.modelling.fmcommons.data.exception.client.ClientRequestFrequencyLimitReachedException;
 import finance.modelling.fmcommons.data.exception.client.InvalidApiKeyException;
 import finance.modelling.fmcommons.data.logging.LogClient;
+import io.netty.handler.ssl.SslHandshakeTimeoutException;
 import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
@@ -50,7 +51,10 @@ public class EodHistoricalClientHelper {
 
     public boolean isRetryableException(Throwable error) {
         boolean isRetryable = false;
-        if (error.getClass().equals(ClientRequestFrequencyLimitReachedException.class)) {
+        if (
+                error.getClass().equals(ClientRequestFrequencyLimitReachedException.class) ||
+                error.getClass().equals(SslHandshakeTimeoutException.class)
+        ) {
             isRetryable = true;
         }
         return isRetryable;
