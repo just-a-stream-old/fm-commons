@@ -40,12 +40,9 @@ public class EodHistoricalClientHelper {
     }
 
     public boolean isRetryableException(Throwable error) {
-        boolean isRetryable = true;
-        if (
-                error.getClass().equals(ClientDailyRequestLimitReachedException.class) ||
-                error.getClass().equals(InvalidApiKeyException.class)
-        ) {
-            isRetryable = false;
+        boolean isRetryable = false;
+        if (true) {
+            isRetryable = true;
         }
         return isRetryable;
     }
@@ -59,7 +56,6 @@ public class EodHistoricalClientHelper {
             error.printStackTrace();
         }
         else if (isClientDailyRequestLimitReached(error)) {
-            // Todo: Schedule stateful retry system - schedule retry at midnight to bypass daily limit
             responseToError.add("Schedule retry...");
         }
         else if (isRetryExhausted(error)) {
