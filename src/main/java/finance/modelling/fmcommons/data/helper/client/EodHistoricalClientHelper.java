@@ -1,12 +1,15 @@
 package finance.modelling.fmcommons.data.helper.client;
 
 import finance.modelling.fmcommons.data.exception.client.ClientDailyRequestLimitReachedException;
+import finance.modelling.fmcommons.data.exception.client.ClientEndPointHasNoDataException;
 import finance.modelling.fmcommons.data.exception.client.ClientRequestFrequencyLimitReachedException;
 import finance.modelling.fmcommons.data.exception.client.InvalidApiKeyException;
 import finance.modelling.fmcommons.data.logging.LogClient;
 import io.netty.handler.ssl.SslHandshakeTimeoutException;
 import lombok.NoArgsConstructor;
+import reactor.netty.http.client.PrematureCloseException;
 
+import javax.net.ssl.SSLException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +34,10 @@ public class EodHistoricalClientHelper {
             customException = new ClientRequestFrequencyLimitReachedException(
                     "Request frequency exceeded. Limit rate further.", error);
         }
+        else if (is404NotFound(error)) {
+            customException = new ClientEndPointHasNoDataException(
+                    "Client has no data to receive from this endpoint. It is likely it does not exist.", error);
+        }
         else {
             customException = error;
         }
@@ -49,11 +56,17 @@ public class EodHistoricalClientHelper {
         return error.getMessage().contains("429 Too Many Requests from GET");
     }
 
+    protected boolean is404NotFound(Throwable error) {
+        return error.getMessage().contains("404 Not Found from GET");
+    }
+
     public boolean isRetryableException(Throwable error) {
         boolean isRetryable = false;
         if (
                 error.getClass().equals(ClientRequestFrequencyLimitReachedException.class) ||
-                error.getClass().equals(SslHandshakeTimeoutException.class)
+                error.getClass().equals(SslHandshakeTimeoutException.class) ||
+                error.getClass().equals(PrematureCloseException.class) ||
+                error.getClass().equals(SSLException.class)
         ) {
             isRetryable = true;
         }
