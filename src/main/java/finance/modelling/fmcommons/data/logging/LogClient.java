@@ -67,7 +67,7 @@ public class LogClient {
             List<String> actions) {
         Map<String, Object> baseOrderedLogMap = new LinkedHashMap<>();
         baseOrderedLogMap.put("event", (String.format("Failure to receive data item: %s for identifier: %s", dataItem.getSimpleName(), identifier)));
-        baseOrderedLogMap.put("error", error.getMessage());
+        baseOrderedLogMap.put("error", getSimpleNameAndMessage(error));
         baseOrderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
         baseOrderedLogMap.put("source(s)", resourcePath);
         baseOrderedLogMap.put("action(s)", actions);
@@ -85,8 +85,30 @@ public class LogClient {
         log.error(gson.toJson(orderedMap, LinkedHashMap.class));
     }
 
+    public static void logInfoProcessComplete(String processName) {
+        Map<String, Object> orderedMap = buildBaseLogInfoProcessComplete(processName);
+        log.info(gson.toJson(orderedMap, LinkedHashMap.class));
+    }
+
+    private static Map<String, Object> buildBaseLogInfoProcessComplete(String processName) {
+        Map<String, Object> baseOrderedLogMap = new LinkedHashMap<>();
+        baseOrderedLogMap.put("Process", processName);
+        baseOrderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
+        return baseOrderedLogMap;
+    }
+
+    public static void logInfoProcessComplete(String processName, Map<String, Object> additionalInfo) {
+        Map<String, Object> orderedMap = buildBaseLogInfoProcessComplete(processName);
+        orderedMap.put("additionalInfo", additionalInfo);
+        log.info(gson.toJson(orderedMap, LinkedHashMap.class));
+    }
+
     public static String buildResourcePath(String baseUrl, String resourceUrl) {
         return baseUrl.concat("/").concat(resourceUrl);
+    }
+
+    public static String getSimpleNameAndMessage(Throwable error) {
+        return error.getClass().getSimpleName().concat(": ").concat(error.getMessage());
     }
 
 
