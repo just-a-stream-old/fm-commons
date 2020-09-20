@@ -1,6 +1,7 @@
 package finance.modelling.fmcommons.data.helper.client;
 
 import finance.modelling.fmcommons.data.exception.client.ClientDailyRequestLimitReachedException;
+import finance.modelling.fmcommons.data.exception.client.ClientRequestFrequencyLimitReachedException;
 import finance.modelling.fmcommons.data.exception.client.InvalidApiKeyException;
 import finance.modelling.fmcommons.data.logging.LogClient;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,10 @@ public class EodHistoricalClientHelper {
         else if (is401InvalidAuthorisationResponse(error)) {
             customException = new InvalidApiKeyException("Invalid Api Key. Have you copied is correctly?", error);
         }
+        else if (is429TooManyRequests(error)) {
+            customException = new ClientRequestFrequencyLimitReachedException(
+                    "Request frequency exceeded. Limit rate further.", error);
+        }
         else {
             customException = error;
         }
@@ -39,9 +44,13 @@ public class EodHistoricalClientHelper {
         return error.getMessage().contains("401 Unauthorized from GET");
     }
 
+    protected boolean is429TooManyRequests(Throwable error) {
+        return error.getMessage().contains("429 Too Many Requests from GET");
+    }
+
     public boolean isRetryableException(Throwable error) {
         boolean isRetryable = false;
-        if (true) {
+        if (error.getClass().equals(ClientRequestFrequencyLimitReachedException.class)) {
             isRetryable = true;
         }
         return isRetryable;
