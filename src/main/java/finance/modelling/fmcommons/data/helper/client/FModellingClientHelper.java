@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.netty.http.client.PrematureCloseException;
 
 import javax.net.ssl.SSLException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,7 +61,9 @@ public class FModellingClientHelper {
                 error.getClass().equals(ClientRequestFrequencyLimitReachedException.class) ||
                 error.getClass().equals(SslHandshakeTimeoutException.class) ||
                 error.getClass().equals(PrematureCloseException.class) ||
-                error.getClass().equals(SSLException.class)
+                error.getClass().equals(SSLException.class) ||
+                error.getClass().equals(IOException.class)
+
         ) {
             isRetryable = true;
         }

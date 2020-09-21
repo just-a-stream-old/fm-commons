@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import reactor.netty.http.client.PrematureCloseException;
 
 import javax.net.ssl.SSLException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,7 +67,9 @@ public class EodHistoricalClientHelper {
                 error.getClass().equals(ClientRequestFrequencyLimitReachedException.class) ||
                 error.getClass().equals(SslHandshakeTimeoutException.class) ||
                 error.getClass().equals(PrematureCloseException.class) ||
-                error.getClass().equals(SSLException.class)
+                error.getClass().equals(SSLException.class) ||
+                error.getClass().equals(IOException.class)
+
         ) {
             isRetryable = true;
         }
@@ -77,7 +80,11 @@ public class EodHistoricalClientHelper {
         List<String> responseToError = new LinkedList<>();
         Map<String, Object> additionalInfo = new HashMap<>();
 
-        if (isKafkaException(error) || isSaslAuthentificationException(error)) {
+        if (isClientEndPointHasNoDataException(error)) {
+            responseToError.add("Log debug and ignore.");
+            LogClient.logDebugFailedToReceiveDataItem(identifier, clazz, error, logResourcePath, responseToError, additionalInfo);
+        }
+        else if (isKafkaException(error) || isSaslAuthentificationException(error)) {
             responseToError.add("Log stacktrace");
             error.printStackTrace();
         }
