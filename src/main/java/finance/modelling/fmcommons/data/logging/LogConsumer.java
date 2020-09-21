@@ -71,11 +71,11 @@ public class LogConsumer {
         log.info(gson.toJson(orderedMap, LinkedHashMap.class));
     }
 
-    public static String determineTraceIdFromHeaders(Headers headers) {
+    public static String determineTraceIdFromHeaders(Headers headers, String traceIdHeaderName) {
         String traceId;
         byte[] traceIdBytes = null;
         for (Header header : headers) {
-            if (header.key().equals("x-trace-id")) {
+            if (header.key().equals(traceIdHeaderName)) {
                 traceIdBytes = header.value();
             }
         }
