@@ -35,7 +35,7 @@ public class LogMessageSent<V> implements ValueTransformer<V, V> {
     public V transform(V value) {
         try {
             Map<String, Object> orderedLogMap = new LinkedHashMap<>();
-            orderedLogMap.put("event", (String.format("Sent KStream<String, %s> message to Kafka", value.getClass().getSimpleName())));
+            orderedLogMap.put("event", (String.format("Sent message of type: %s to Kafka", value.getClass().getSimpleName())));
             orderedLogMap.put("topic", outputTopic);
             orderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
             orderedLogMap.put("traceId", determineTraceIdFromHeaders(context.headers(), traceIdHeaderName));
@@ -43,7 +43,7 @@ public class LogMessageSent<V> implements ValueTransformer<V, V> {
         }
         catch (Exception e) {
             Map<String, Object> orderedLogErrorMap = new LinkedHashMap<>();
-            orderedLogErrorMap.put("event", (String.format("Failure to log Kafka message of type: %s sent", value.getClass().getSimpleName())));
+            orderedLogErrorMap.put("event", (String.format("Failure to log message sent to Kafka of type: %s", value.getClass().getSimpleName())));
             orderedLogErrorMap.put("topic", context.topic());
             orderedLogErrorMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
             orderedLogErrorMap.put("traceId", "Unknown");
