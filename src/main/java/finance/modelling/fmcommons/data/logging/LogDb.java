@@ -74,7 +74,7 @@ public class LogDb {
         Map<String, Object> baseOrderedLogMap = new LinkedHashMap<>();
         baseOrderedLogMap.put("event", String.format("Saved data type: %s to repository with identifier: %s", dataItem.getSimpleName(), identifier));
         baseOrderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
-        baseOrderedLogMap.put("destination(s)", destinationPath);
+        baseOrderedLogMap.put("destination", destinationPath);
         return baseOrderedLogMap;
     }
 
@@ -85,6 +85,20 @@ public class LogDb {
             Map<String, Object> additionalInfo) {
         Map<String, Object> orderedLogMap = buildBaseLogDebugDataItemQueriedMap(dataItem, identifier, destinationPath);
         orderedLogMap.put("additionalInfo", additionalInfo);
+        log.info(gson.toJson(orderedLogMap, LinkedHashMap.class));
+    }
+
+    public static void logErrorFailedDataItemSave(
+            Class<?> dataItem,
+            Throwable error,
+            String destinationPath,
+            List<String> actions) {
+        Map<String, Object> orderedLogMap = new LinkedHashMap<>();
+        orderedLogMap.put("event", String.format("Failure to save database item(s) of type %s", dataItem.getSimpleName()));
+        orderedLogMap.put("error", error.getMessage());
+        orderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
+        orderedLogMap.put("destination", destinationPath);
+        orderedLogMap.put("action(s)", actions);
         log.info(gson.toJson(orderedLogMap, LinkedHashMap.class));
     }
 
