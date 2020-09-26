@@ -1,4 +1,4 @@
-package finance.modelling.fmcommons.data.schema.model;
+package finance.modelling.fmcommons.data.schema.model.enums;
 
 public enum FinanceApi {
     EOD_HISTORICAL_DATA,
