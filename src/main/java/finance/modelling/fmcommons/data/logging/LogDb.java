@@ -19,28 +19,28 @@ public class LogDb {
     public static void logDebugDataItemQueried(
             Class<?> dataItem,
             String identifier,
-            String resourceUri) {
-        Map<String, Object> orderedLogMap = buildBaseLogDebugDataItemQueriedMap(dataItem, identifier, resourceUri);
+            String resourcePath) {
+        Map<String, Object> orderedLogMap = buildBaseLogDebugDataItemQueriedMap(dataItem, identifier, resourcePath);
         log.info(gson.toJson(orderedLogMap, LinkedHashMap.class));
     }
 
     private static Map<String, Object> buildBaseLogDebugDataItemQueriedMap(
             Class<?> dataItem,
             String identifier,
-            String resourceUri) {
+            String resourcePath) {
         Map<String, Object> baseOrderedLogMap = new LinkedHashMap<>();
         baseOrderedLogMap.put("event", String.format("Queried data type: %s with identifier: %s", dataItem.getSimpleName(), identifier));
         baseOrderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
-        baseOrderedLogMap.put("source(s)", resourceUri);
+        baseOrderedLogMap.put("source(s)", resourcePath);
         return baseOrderedLogMap;
     }
 
     public static void logDebugDataItemQueried(
             Class<?> dataItem,
             String identifier,
-            String resourceUri,
+            String resourcePath,
             Map<String, Object> additionalInfo) {
-        Map<String, Object> orderedLogMap = buildBaseLogDebugDataItemQueriedMap(dataItem, identifier, resourceUri);
+        Map<String, Object> orderedLogMap = buildBaseLogDebugDataItemQueriedMap(dataItem, identifier, resourcePath);
         orderedLogMap.put("additionalInfo", additionalInfo);
         log.info(gson.toJson(orderedLogMap, LinkedHashMap.class));
     }
@@ -48,14 +48,43 @@ public class LogDb {
     public static void logErrorFailedDataItemQuery(
             Class<?> dataItem,
             Throwable error,
-            String resourceUri,
+            String resourcePath,
             List<String> actions) {
         Map<String, Object> orderedLogMap = new LinkedHashMap<>();
         orderedLogMap.put("event", String.format("Failure to query database item(s) of type %s", dataItem.getSimpleName()));
         orderedLogMap.put("error", error.getMessage());
         orderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
-        orderedLogMap.put("source(s)", resourceUri);
+        orderedLogMap.put("source(s)", resourcePath);
         orderedLogMap.put("action(s)", actions);
+        log.info(gson.toJson(orderedLogMap, LinkedHashMap.class));
+    }
+
+    public static void logInfoDataItemSaved(
+            Class<?> dataItem,
+            String identifier,
+            String destinationPath) {
+        Map<String, Object> orderedLogMap = buildBaseLogInfoDataItemSavedMap(dataItem, identifier, destinationPath);
+        log.info(gson.toJson(orderedLogMap, LinkedHashMap.class));
+    }
+
+    private static Map<String, Object> buildBaseLogInfoDataItemSavedMap(
+            Class<?> dataItem,
+            String identifier,
+            String destinationPath) {
+        Map<String, Object> baseOrderedLogMap = new LinkedHashMap<>();
+        baseOrderedLogMap.put("event", String.format("Saved data type: %s to repository with identifier: %s", dataItem.getSimpleName(), identifier));
+        baseOrderedLogMap.put("timestamp", dateFormatter.format(Date.from(Instant.now())));
+        baseOrderedLogMap.put("destination(s)", destinationPath);
+        return baseOrderedLogMap;
+    }
+
+    public static void logInfoDataItemSaved(
+            Class<?> dataItem,
+            String identifier,
+            String destinationPath,
+            Map<String, Object> additionalInfo) {
+        Map<String, Object> orderedLogMap = buildBaseLogDebugDataItemQueriedMap(dataItem, identifier, destinationPath);
+        orderedLogMap.put("additionalInfo", additionalInfo);
         log.info(gson.toJson(orderedLogMap, LinkedHashMap.class));
     }
 
