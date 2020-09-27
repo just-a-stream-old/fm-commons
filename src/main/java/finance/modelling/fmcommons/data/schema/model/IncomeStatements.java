@@ -6,11 +6,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@Document("balance_sheets")
+@Document("income_statements")
 @SuperBuilder
 @Data
-public class BalanceSheets {
-
+public class IncomeStatements {
     private String symbol;
-    private List<BalanceSheet> balanceSheets;
+    private List<IncomeStatement> incomeStatements;
 }
