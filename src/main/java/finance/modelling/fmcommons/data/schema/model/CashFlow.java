@@ -6,8 +6,6 @@ import lombok.Data;
 public class CashFlow {
     private String date;
     private String symbol;
-    private String fillingDate;
-    private String acceptedDate;
     private String period;
     private Long netIncome;
     private Long depreciationAndAmortization;
@@ -39,6 +37,4 @@ public class CashFlow {
     private Long operatingCashFlow;
     private Long capitalExpenditure;
     private Long freeCashFlow;
-    private String link;
-    private String finalLink;
 }

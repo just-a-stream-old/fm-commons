@@ -6,8 +6,6 @@ import lombok.Data;
 public class BalanceSheet {
     private String symbol;
     private String date;
-    private String fillingDate;
-    private String acceptedDate;
     private String period;
     private Long cashAndCashEquivalents;
     private Long shortTermInvestments;
@@ -48,6 +46,4 @@ public class BalanceSheet {
     private Long totalInvestments;
     private Long totalDebt;
     private Long netDebt;
-    private String link;
-    private String finalLink;
 }

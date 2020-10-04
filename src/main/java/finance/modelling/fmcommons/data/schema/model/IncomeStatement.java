@@ -6,8 +6,6 @@ import lombok.Data;
 public class IncomeStatement {
     private String symbol;
     private String date;
-    private String fillingDate;
-    private String acceptedDate;
     private String period;
     private Long revenue;
     private Long costOfRevenue;
@@ -35,6 +33,4 @@ public class IncomeStatement {
     private Double EpsDiluted;
     private Long weightedAverageShsOut;
     private Long weightedAverageShsOutDil;
-    private String link;
-    private String finalLink;
 }
